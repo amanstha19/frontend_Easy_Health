@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { Link } from 'react-router-dom'; // Ensure you have react-router-dom installed
 
 function Navbar() {
   return (
@@ -25,21 +25,16 @@ function Navbar() {
             <li className="nav-item">
               <a className="nav-link" href="#">Features</a>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Pricing</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">About</a>
-            </li>
           </ul>
 
-          {/* Search Bar */}
+          {/* Search Bar - Make it larger */}
           <form className="d-flex ms-auto">
             <input
               className="form-control form-control-lg me-2"
               type="search"
               placeholder="Search"
               aria-label="Search"
+              style={{ width: '300px' }}  // Correct comment removed
             />
             <button className="btn btn-outline-light btn-lg" type="submit">
               Search
@@ -50,6 +45,14 @@ function Navbar() {
           <a href="/cart" className="btn btn-outline-light ms-2 btn-lg">
             <i className="bi bi-cart"></i> Cart
           </a>
+
+          {/* Login and Sign Up Links - Make buttons smaller */}
+          <Link to="/login" className="btn btn-outline-light ms-2 btn-sm">
+            Login
+          </Link>
+          <Link to="/signup" className="btn btn-outline-light ms-2 btn-sm">
+            Sign Up
+          </Link>
         </div>
       </div>
     </nav>
