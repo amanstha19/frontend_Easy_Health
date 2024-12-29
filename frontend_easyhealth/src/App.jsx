@@ -12,6 +12,7 @@ import Features from './components/screens/Features'; // Corrected relative path
 import Login from './components/screens/Login'; // Adjust path if needed
 import SignupScreen from './components/screens/SignupScreen'; // Adjust path if needed
 import Cart from './components/screens/Cart'
+import HomeScreen from "./components/screens/HomeScreen";
 function App() {
   useEffect(() => {
     // Call the API when the component mounts
@@ -24,7 +25,7 @@ function App() {
       <Container>
         <Routes>
           {/* Define Routes */}
-          <Route exact path="/" element={<div>HomeScreen</div>} />
+          <Route exact path="/" element={<HomeScreen />} />
           <Route exact path="/features" element={<Features />} />
           <Route exact path="/cart" element={<Cart Page/>} />
           <Route exact path="/login" element={<Login />} />
