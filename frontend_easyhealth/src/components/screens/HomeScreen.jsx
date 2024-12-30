@@ -30,56 +30,57 @@ function HomeScreen() {
 
       <h1>Popular Products</h1>
       <Row>
-        {Array.isArray(products) && products.length > 0 ? (
-          products.map((product) => {
-            console.log(product._id); // Fixing bracket error
-            return ( 
-              <Col key={product.id} sm={12} md={6} lg={4} xl={3} style={{ display: 'flex', justifyContent: 'center' }}>
-                <div style={{ 
-                  width: '100%', 
-                  maxWidth: '200px',
-                  maxHeight: 'auto', 
-                  textAlign: 'center', 
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
-                  borderRadius: '10px', 
-                  overflow: 'hidden' 
-                }}>
-                  <Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <div style={{ 
+  {Array.isArray(products) && products.length > 0 ? (
+    products.map((product) => {
+      console.log(product._id); // Make sure to log the correct identifier
+      return (
+        <Col key={product.id} sm={12} md={6} lg={4} xl={3} style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ 
+            width: '100%', 
+            maxWidth: '200px',
+            maxHeight: 'auto', 
+            textAlign: 'center', 
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+            borderRadius: '10px', 
+            overflow: 'hidden' 
+          }}>
+            <Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <div style={{ 
+                width: '100%', 
+                aspectRatio: '1 / 1', 
+                overflow: 'hidden', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                backgroundColor: '#f0f0f0' // Fallback background color
+              }}>
+                {product.image ? (
+                  <img
+                    src={`http://127.0.0.1:8000${product.image}`} // Backend URL for images
+                    alt={product.generic_name}
+                    style={{ 
                       width: '100%', 
-                      aspectRatio: '1 / 1', 
-                      overflow: 'hidden', 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center',
-                      backgroundColor: '#f0f0f0' // Fallback background color
-                    }}>
-                      {product.image ? (
-                        <img
-                          src={`http://127.0.0.1:8000${product.image}`} // Update with your backend URL
-                          alt={product.generic_name}
-                          style={{ 
-                            width: '100%', 
-                            height: '100%', 
-                            objectFit: 'cover' 
-                          }}
-                        />
-                      ) : (
-                        <p>No image available</p>
-                      )}
-                    </div>
-                    <h3 style={{ fontSize: '1.1rem', margin: '10px 0' }}>{product.generic_name}</h3>
-                  </Link>
-                  <p style={{ margin: '5px 0', color: '#555' }}>Category: {product.category}</p>
-                  <p style={{ margin: '5px 0', fontWeight: 'bold' }}>Price: NPR{product.price || 'N/A'}</p> {/* Handle price being undefined */}
-                </div>
-              </Col>
-            );
-          })
-        ) : (
-          <p>No products found.</p>
-        )}
-      </Row>
+                      height: '100%', 
+                      objectFit: 'cover' 
+                    }}
+                  />
+                ) : (
+                  <p>No image available</p>
+                )}
+              </div>
+              <h3 style={{ fontSize: '1.1rem', margin: '10px 0' }}>{product.generic_name}</h3>
+            </Link>
+            <p style={{ margin: '5px 0', color: '#555' }}>Category: {product.category}</p>
+            <p style={{ margin: '5px 0', fontWeight: 'bold' }}>Price: NPR{product.price || 'N/A'}</p> 
+          </div>
+        </Col>
+      );
+    })
+  ) : (
+    <p>No products found.</p>
+  )}
+</Row>
+
     </Container>
   );
 }

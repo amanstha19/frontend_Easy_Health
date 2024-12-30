@@ -4,8 +4,8 @@ import { Container, Row, Col, Image, Button, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 
 function ProductScreen() {
-  const { id } = useParams(); // Extract the product ID from the route
-  const navigate = useNavigate(); // For navigation (e.g., back button)
+  const { id } = useParams();  // Extract the product ID from the route
+  const navigate = useNavigate();  // For navigation (e.g., back button)
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,9 +15,10 @@ function ProductScreen() {
       try {
         setLoading(true);
         const { data } = await axios.get(`/api/product/${id}`); // Fetch product details from API
+        console.log('Product data from API:', data);  // Log the response data
         setProduct(data);
       } catch (err) {
-        console.error('Error fetching product details:', err);
+        console.error('Error fetching product details:', err.response || err.message);
         setError('Failed to load product details.');
       } finally {
         setLoading(false);
@@ -47,7 +48,7 @@ function ProductScreen() {
       <Row>
         <Col md={6}>
           <Image
-            src={`http://127.0.0.1:8000${product.image}`} // Adjust the backend URL accordingly
+            src={`http://127.0.0.1:8000${product.image}`}  // Ensure this is your correct backend URL
             alt={product.generic_name}
             fluid
           />
