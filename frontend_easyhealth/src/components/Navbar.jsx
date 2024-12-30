@@ -23,23 +23,11 @@ function Navbar() {
               <a className="nav-link active" href="#">Home</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">Features</a>
+              <a className="nav-link" href="#">Lab Test</a>
             </li>
           </ul>
 
-          {/* Search Bar - Make it larger */}
-          <form className="d-flex ms-auto">
-            <input
-              className="form-control form-control-lg me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              style={{ width: '300px' }}  // Correct comment removed
-            />
-            <button className="btn btn-outline-light btn-lg" type="submit">
-              Search
-            </button>
-          </form>
+    
 
           {/* Cart Icon */}
           <a href="/cart" className="btn btn-outline-light ms-2 btn-lg">

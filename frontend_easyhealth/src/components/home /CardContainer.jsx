@@ -1,18 +1,45 @@
+import React, { useState } from 'react';
+import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import './LandingContainer.css'; // Custom CSS for styling the container
+import { useNavigate } from 'react-router-dom';
 
+function LandingContainer() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
-function CardContainer() {
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/home?search=${searchQuery}`);
+    }
+  };
+
   return (
-    <section className="py-5" id="shop"> 
-    <h4 style={{textAlign: "centre"}}>Our Products </h4>
-    <div className="row row-cols-1 row-cols-md-3 g-4">
-        <div className="col">
-            <div className="card h-100">
-                
-            </div>
-        </div>
+    <div className="landing-container">
+      <Container fluid className="text-center py-5">
+        <Row>
+          <Col>
+            <h1 className="landing-title">Welcome to Easy Health</h1>
+            <p className="landing-subtitle">
+              Your one-stop platform for managing medications, lab tests, and health records.
+            </p>
+            <Form onSubmit={handleSearch} className="search-form">
+              <Form.Control
+                type="text"
+                placeholder="Search for products, medicines..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+              <Button variant="success" type="submit" className="search-button">
+                Search
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
     </div>
-    </section>
-  )
-} 
+  );
+}
 
-export default CardContainer
+export default LandingContainer;
