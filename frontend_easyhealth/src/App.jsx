@@ -1,21 +1,20 @@
-import React, { useEffect } from "react"; // Import useEffect
-import Navbar from "./components/Navbar"; // Ensure correct import path
+import React, { useEffect } from "react";
+import Navbar from "./components/Navbar";
 import { Container } from "react-bootstrap";
-import Footer from "./components/Footer"; // Ensure this path is correct
-import "bootstrap/dist/css/bootstrap.min.css"; // Bootstrap CSS
-import '@fortawesome/fontawesome-free/css/all.min.css'; // Font Awesome Icons
+import Footer from "./components/Footer";
+import "bootstrap/dist/css/bootstrap.min.css";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { testAPI } from './utils/api'; // Assuming the testAPI function is located in utils/api
-import { HashRouter as Router, Routes, Route } from "react-router-dom"; // Import React Router components
+import { testAPI } from './utils/api';
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 
-import Features from './components/screens/Features'; // Corrected relative path
-import Login from './components/screens/Login'; // Adjust path if needed
-import SignupScreen from './components/screens/SignupScreen'; // Adjust path if needed
-import Cart from './components/screens/Cart'
+import Login from './components/screens/Login';
+import SignupScreen from './components/screens/SignupScreen';
 import HomeScreen from "./components/screens/HomeScreen";
+import Product from "./components/product";
+
 function App() {
   useEffect(() => {
-    // Call the API when the component mounts
     testAPI();
   }, []);
 
@@ -24,11 +23,15 @@ function App() {
       <Navbar />
       <Container>
         <Routes>
-          {/* Define Routes */}
           <Route exact path="/" element={<HomeScreen />} />
-          <Route exact path="/features" element={<Features />} />
-          <Route exact path="/cart" element={<Cart Page/>} />
+        </Routes>
+        <Routes>
+          <Route exact path="/product/:id" element={<Product />} />
+        </Routes>
+        <Routes>
           <Route exact path="/login" element={<Login />} />
+        </Routes>
+        <Routes>
           <Route exact path="/signup" element={<SignupScreen />} />
         </Routes>
       </Container>

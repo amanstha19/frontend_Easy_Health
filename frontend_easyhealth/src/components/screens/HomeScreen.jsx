@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
-import { Link } from 'react-router-dom';  // Import Link for navigation
 
 function HomeScreen() {
   const [products, setProducts] = useState([]);
@@ -30,23 +30,20 @@ function HomeScreen() {
         {Array.isArray(products) && products.length > 0 ? (
           products.map((product) => (
             <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-              <h3>{product.generic_name}</h3>
-              <p>Category: {product.category}</p>
-              <p>Price: Rs{product.price}</p>
-              {/* Add the image here */}
-              {product.image ? (
-                <img
-                  src={`http://127.0.0.1:8000${product.image}`} // Update with your backend URL
-                  alt={product.generic_name}
-                  style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
-                />
-              ) : (
-                <p>No image available</p>
-              )}
-              {/* Add Link to product detail page */}
-              <Link to={`/product/${product._id}`} className="btn btn-primary">
-                View Details
+              <Link to={`/product/${product._id}`}>
+                {product.image ? (
+                  <img
+                    src={`http://127.0.0.1:8000${product.image}`} // Update with your backend URL
+                    alt={product.generic_name}
+                    style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <p>No image available</p>
+                )}
+                <h3>{product.generic_name}</h3>
               </Link>
+              <p>Category: {product.category}</p>
+              <p>Price: ${product.price}</p>
             </Col>
           ))
         ) : (
