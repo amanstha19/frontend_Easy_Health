@@ -25,6 +25,11 @@ function Navbar() {
             <li className="nav-item">
               <a className="nav-link" href="#">Lab Test</a>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/ambulance">Ambulance</Link>
+            </li>
+           
+            
           </ul>
 
     

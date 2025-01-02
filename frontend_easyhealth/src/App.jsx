@@ -13,6 +13,7 @@ import Login from './components/screens/Login'; // Adjust path if needed
 import SignupScreen from './components/screens/SignupScreen'; // Adjust path if needed
 import HomeScreen from "./components/screens/HomeScreen"; // Corrected relative path
 import ProductScreen from './components/screens/ProductScreen'; // Ensure this matches
+import Ambulance from './components/screens/Ambulance';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route exact path="/product/:id" element={<ProductScreen />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/signup" element={<SignupScreen />} />
+          <Route path="/ambulance" element={<Ambulance />} />
         </Routes>
       </Container>
       <Footer />
