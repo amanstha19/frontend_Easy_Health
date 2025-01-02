@@ -11,9 +11,11 @@
 
 /* Animation for fading background */
 @keyframes fadeBackground {
-  
+  0% {
+    background: linear-gradient(to bottom right, #55ae58, #81c784);
+  }
   50% {
-    background: linear-gradient(to bottom right, #66bb6a, #4caf50);
+    background: linear-gradient(to bottom right, #66bb6a, #7aa17c);
   }
   100% {
     background: linear-gradient(to bottom right, #81c784, #66bb6a);
