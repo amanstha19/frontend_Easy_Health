@@ -41,25 +41,45 @@ function ProductScreen() {
   }
 
   return (
-    <Container>
-      <Button variant="secondary" onClick={() => navigate(-1)} style={{ marginBottom: '20px' }}>
+    <Container style={{ backgroundColor: '#e4f7e4', padding: '50px 0', borderRadius: '10px' }}>
+      <Button
+        variant="secondary"
+        onClick={() => navigate(-1)}
+        style={{
+          marginBottom: '20px',
+          backgroundColor: '#3a5a40', // Matches the green theme
+          borderColor: '#3a5a40',
+        }}
+      >
         Go Back
       </Button>
       <Row>
-        <Col md={6}>
+        <Col md={6} style={{ display: 'flex', justifyContent: 'center' }}>
           <Image
             src={`http://127.0.0.1:8000${product.image}`}  // Ensure this is your correct backend URL
             alt={product.generic_name}
             fluid
+            style={{
+              borderRadius: '10px',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            }}
           />
         </Col>
-        <Col md={6}>
-          <h1>{product.name}</h1>
-          <p><strong>Generic Name:</strong> {product.generic_name}</p>
-          <p><strong>Category:</strong> {product.category}</p>
-          <p><strong>Price:</strong> NPR {product.price || 'N/A'}</p>
-          <p><strong>Description:</strong> {product.description || 'No description available.'}</p>
-          <Button variant="primary" size="lg">
+        <Col md={6} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <h1 style={{ color: '#3a5a40', fontSize: '2rem' }}>{product.name}</h1>
+          <p style={{ fontSize: '1.1rem', color: '#3a5a40' }}><strong>Generic Name:</strong> {product.generic_name}</p>
+          <p style={{ fontSize: '1.1rem', color: '#3a5a40' }}><strong>Category:</strong> {product.category}</p>
+          <p style={{ fontSize: '1.1rem', color: '#3a5a40' }}><strong>Price:</strong> NPR {product.price || 'N/A'}</p>
+          <p style={{ fontSize: '1.1rem', color: '#3a5a40' }}><strong>Description:</strong> {product.description || 'No description available.'}</p>
+          <Button
+            variant="primary"
+            size="lg"
+            style={{
+              backgroundColor: '#3a5a40',  // Matches the green theme
+              borderColor: '#3a5a40',
+              marginTop: '20px',
+            }}
+          >
             Add to Cart
           </Button>
         </Col>

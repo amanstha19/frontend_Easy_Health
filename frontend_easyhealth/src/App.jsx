@@ -1,4 +1,5 @@
-import React, { useEffect } from "react"; // Import useEffect
+import React, { useState, useEffect } from 'react';
+// Import useEffect
 import Navbar from "./components/Navbar"; // Ensure correct import path
 import { Container } from "react-bootstrap";
 import Footer from "./components/Footer"; // Ensure this path is correct
@@ -11,7 +12,8 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom"; // Impor
 import Login from './components/screens/Login'; // Adjust path if needed
 import SignupScreen from './components/screens/SignupScreen'; // Adjust path if needed
 import HomeScreen from "./components/screens/HomeScreen"; // Corrected relative path
-import Product from "./components/product"; // Corrected relative path
+import ProductScreen from './components/screens/ProductScreen'; // Ensure this matches
+
 
 function App() {
   useEffect(() => {
@@ -25,7 +27,7 @@ function App() {
       <Container>
         <Routes>
           <Route exact path="/" element={<HomeScreen />} />
-          <Route exact path="/product/:id" element={<Product />} />
+          <Route exact path="/product/:id" element={<ProductScreen />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/signup" element={<SignupScreen />} />
         </Routes>
