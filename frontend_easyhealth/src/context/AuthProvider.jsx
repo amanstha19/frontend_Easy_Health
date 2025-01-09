@@ -1,13 +1,15 @@
 // src/context/AuthProvider.jsx
-import React, { createContext, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { createContext } from 'react';
 
+// Create AuthContext
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
-  const [user, setUser] = useState(null);  // Store the logged-in user
+  const [user, setUser] = useState(null);
 
   const signup = async ({ username, email, password, firstName, lastName }) => {
     try {
@@ -19,8 +21,8 @@ export const AuthProvider = ({ children }) => {
         last_name: lastName
       });
       console.log('User registered:', response.data);
-      setUser(response.data.user); // Save user info after registration
-      setError(null); // Clear error
+      setUser(response.data.user);  // Assuming the response contains user data
+      setError(null);  // Reset any previous errors
     } catch (err) {
       setError(err.response?.data?.detail || 'An error occurred');
     }
@@ -34,16 +36,16 @@ export const AuthProvider = ({ children }) => {
       });
       console.log('Login successful:', response.data);
       
-      // Store token in localStorage or sessionStorage
+      // Save token to localStorage
       localStorage.setItem('authTokens', JSON.stringify(response.data));
 
-      // Set user data from the response (ensure correct structure based on your API response)
+      // Assuming the response contains user data
       setUser({
-        username: response.data.username, // Assuming the response contains the username
-        email: response.data.email, // You can add more fields as needed
+        username: response.data.username,
+        email: response.data.email,
       });
 
-      setError(null); // Clear error
+      setError(null);  // Reset any errors
       return Promise.resolve();
     } catch (err) {
       setError(err.response?.data?.detail || 'Login failed');
@@ -52,8 +54,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('authTokens'); // Clear user info on logout
+    setUser(null);  // Clear user data on logout
+    localStorage.removeItem('authTokens');  // Remove token from localStorage
   };
 
   return (

@@ -6,14 +6,14 @@ import { AuthContext } from '../../context/AuthProvider';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { login, error } = useContext(AuthContext);
+  const { login, error } = useContext(AuthContext);  // Destructure login and error from AuthContext
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login({ username, password });
-      navigate('/'); // Redirect to home on successful login
+      navigate('/');  // Redirect to home after successful login
     } catch (err) {
       console.error('Login error:', err.response?.data || err.message);
       alert(err.response?.data?.detail || 'Login failed. Please check your credentials.');

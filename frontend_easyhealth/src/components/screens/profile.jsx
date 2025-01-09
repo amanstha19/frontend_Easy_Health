@@ -1,32 +1,21 @@
-// src/components/Profile.jsx
-import React, { useContext, useEffect } from 'react';
+// src/components/screens/Profile.jsx
+import React, { useContext } from 'react';
 import { AuthContext } from '../../context/AuthProvider';
-import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);  // Get user from AuthContext
 
-  useEffect(() => {
-    // If no user is logged in, redirect to login
-    if (!user) {
-      navigate('/signin');
-    }
-  }, [user, navigate]);
+  if (!user) {
+    return <div>Please log in to view your profile.</div>;
+  }
 
   return (
     <div className="container mt-5">
-      {user ? (
-        <div>
-          <h2>User Profile</h2>
-          <p><strong>Username:</strong> {user.username}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          {/* Display other user info if available */}
-          <button onClick={logout} className="btn btn-danger">Logout</button>
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+      <h2>User Profile</h2>
+      <div>
+        <p><strong>Username:</strong> {user.username}</p>
+        <p><strong>Email:</strong> {user.email}</p>
+      </div>
     </div>
   );
 };

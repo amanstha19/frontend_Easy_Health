@@ -1,13 +1,13 @@
+// src/components/Navbar.jsx
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthProvider';
+import { AuthContext } from '../context/AuthProvider';  // Make sure the path is correct
 
 function Navbar() {
-  const { user, setUser, logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
   const handleLogout = () => {
-    logout(); // Use the logout function from AuthContext if it handles clearing tokens
-    setUser(null); // Clear user state
+    logout();  // Logout from context
   };
 
   return (
@@ -48,7 +48,11 @@ function Navbar() {
           {user ? (
             <div className="d-flex ms-3">
               <span className="navbar-text text-light me-2">Hello, {user.username}</span>
-              <button onClick={handleLogout} className="btn btn-outline-light btn-sm">
+              {/* Profile Link */}
+              <Link to="/profile" className="btn btn-outline-light ms-2 btn-sm">
+                Profile
+              </Link>
+              <button onClick={handleLogout} className="btn btn-outline-light btn-sm ms-2">
                 Logout
               </button>
             </div>

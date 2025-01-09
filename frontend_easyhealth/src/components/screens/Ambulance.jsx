@@ -18,7 +18,16 @@ const AmbulanceList = () => {
       <h1>Ambulance Services in Nepal</h1>
       <ul>
         {ambulanceServices.map((service, index) => (
-          <li key={index}>
+          <li 
+            key={index} 
+            style={{
+              border: '1px solid #ccc', 
+              padding: '10px', 
+              marginBottom: '10px', 
+              backgroundColor: '#d4f7d4',  // Lighter green shade
+              borderRadius: '5px'
+            }}
+          >
             <strong>{service.name}</strong><br />
             Contact: {service.contact}<br />
             Location: {service.location}

@@ -14,7 +14,7 @@ import HomeScreen from './components/screens/HomeScreen'; // Corrected relative 
 import ProductScreen from './components/screens/ProductScreen'; // Ensure this matches
 import Ambulance from './components/screens/Ambulance'; // Ensure this matches
 import { AuthProvider } from './context/AuthProvider'; // Import AuthProvider
-
+import Profile from './components/screens/profile'; // Import Profile Component
 
 
 function App() {
@@ -35,7 +35,7 @@ function App() {
             <Route path="/signup" element={<SignupScreen />} />
             <Route path="/signin" element={<Login />} /> {/* Add the /signin route */}
             <Route path="/ambulance" element={<Ambulance />} />
-          
+            <Route path="/profile" element={<Profile />} /> {/* Add the /profile route */}
             
           </Routes>
         </Container>

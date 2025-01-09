@@ -1,7 +1,7 @@
-// Signup.js
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../../src/context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -9,14 +9,36 @@ const Signup = () => {
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const { signup, error } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [passwordError, setPasswordError] = useState('');
+  // Check email uniqueness via backend API
+  const checkEmailUniqueness = async () => {
+    try {
+      const response = await axios.post('http://localhost:8000/api/check-email/', { email }); // Ensure this is the correct API endpoint
+      if (response.data.message === 'Email is available.') {
+        setEmailError('');
+        return true;
+      } else {
+        setEmailError(response.data.error || 'This email is already registered.');
+        return false;
+      }
+    } catch (err) {
+      console.error('Error checking email uniqueness:', err);
+      setEmailError('Error checking email uniqueness. Please try again.');
+      return false;
+    }
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Check if the email is unique
+    if (!await checkEmailUniqueness()) return;
+
+    // Validate password format
     const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
       setPasswordError('Password should be at least 8 characters long and contain at least 1 special character.');
@@ -25,9 +47,7 @@ const Signup = () => {
 
     setPasswordError('');
 
-    // Log the data being sent to the backend
-    console.log({ email, password, username, firstName, lastName });
-
+    // Proceed with signup if all checks are successful
     signup({ email, password, username, firstName, lastName })
       .then(() => {
         navigate('/signin');
@@ -91,6 +111,7 @@ const Signup = () => {
                   placeholder="Enter your email"
                   required
                 />
+                {emailError && <div className="text-danger mt-2">{emailError}</div>}
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">Password</label>
