@@ -1,61 +1,51 @@
-// src/context/AuthProvider.jsx
-import React, { useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { createContext } from 'react';
 
-// Create AuthContext
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
 
-  const signup = async ({ username, email, password, firstName, lastName }) => {
-    try {
-      const response = await axios.post('http://localhost:8000/api/register/', {
-        username,
-        email,
-        password,
-        first_name: firstName,
-        last_name: lastName
+  useEffect(() => {
+    const authTokens = sessionStorage.getItem('authTokens'); // Use sessionStorage instead
+    if (authTokens) {
+      const parsedTokens = JSON.parse(authTokens);
+      setUser({
+        username: parsedTokens.username,
+        email: parsedTokens.email,
       });
-      console.log('User registered:', response.data);
-      setUser(response.data.user);  // Assuming the response contains user data
-      setError(null);  // Reset any previous errors
+    }
+  }, []);
+
+  const signup = async (userData) => {
+    try {
+      const response = await axios.post('http://localhost:8000/api/register/', userData);
+      setUser(response.data.user);
+      sessionStorage.setItem('authTokens', JSON.stringify(response.data.tokens)); // Store tokens in sessionStorage
     } catch (err) {
-      setError(err.response?.data?.detail || 'An error occurred');
+      setError(err.response?.data?.detail || 'Signup failed');
     }
   };
 
-  const login = async ({ username, password }) => {
+  const login = async (credentials) => {
     try {
-      const response = await axios.post('http://localhost:8000/api/token/', {
-        username,
-        password,
-      });
-      console.log('Login successful:', response.data);
-      
-      // Save token to localStorage
-      localStorage.setItem('authTokens', JSON.stringify(response.data));
-
-      // Assuming the response contains user data
+      const response = await axios.post('http://localhost:8000/api/token/', credentials);
+      sessionStorage.setItem('authTokens', JSON.stringify(response.data)); // Store tokens in sessionStorage
       setUser({
         username: response.data.username,
         email: response.data.email,
       });
-
-      setError(null);  // Reset any errors
-      return Promise.resolve();
+      setError(null);
     } catch (err) {
       setError(err.response?.data?.detail || 'Login failed');
-      return Promise.reject(err);
     }
   };
 
   const logout = () => {
-    setUser(null);  // Clear user data on logout
-    localStorage.removeItem('authTokens');  // Remove token from localStorage
+    setUser(null);
+    sessionStorage.removeItem('authTokens'); // Clear sessionStorage on logout
   };
 
   return (

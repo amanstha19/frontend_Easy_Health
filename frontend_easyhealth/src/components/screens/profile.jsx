@@ -1,21 +1,51 @@
-// src/components/screens/Profile.jsx
-import React, { useContext } from 'react';
-import { AuthContext } from '../../context/AuthProvider';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Profile = () => {
-  const { user } = useContext(AuthContext);  // Get user from AuthContext
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
 
-  if (!user) {
-    return <div>Please log in to view your profile.</div>;
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const authTokens = sessionStorage.getItem('authTokens'); // Retrieve token from sessionStorage
+      if (!authTokens) {
+        setError('No token available. Please log in.');
+        return;
+      }
+
+      try {
+        const parsedTokens = JSON.parse(authTokens); // Parse the stored tokens
+        const response = await axios.get('http://localhost:8000/api/user/profile/', {
+          headers: {
+            'Authorization': `Bearer ${parsedTokens.access}`, // Use the access token
+          },
+        });
+
+        setUser(response.data); // Save user data to state
+      } catch (err) {
+        setError('Error fetching profile: ' + err.response?.data?.detail || err.message);
+      }
+    };
+
+    fetchProfile();
+  }, []); // Empty array means this effect runs once when the component mounts
+
+  if (error) {
+    return <div>{error}</div>;
   }
 
   return (
-    <div className="container mt-5">
-      <h2>User Profile</h2>
-      <div>
-        <p><strong>Username:</strong> {user.username}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-      </div>
+    <div>
+      {user ? (
+        <div>
+          <h1>{user.username}'s Profile</h1>
+          <p>Email: {user.email}</p>
+          <p>First Name: {user.first_name ? user.first_name : 'N/A'}</p> {/* Display first name if available */}
+          <p>Last Name: {user.last_name ? user.last_name : 'N/A'}</p> {/* Display last name if available */}
+        </div>
+      ) : (
+        <p>Loading profile...</p>
+      )}
     </div>
   );
 };
