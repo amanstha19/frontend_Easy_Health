@@ -9,13 +9,14 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);  // Store the logged-in user
 
-  const signup = async ({ username, email, password }) => {
+  const signup = async ({ username, email, password, firstName, lastName }) => {
     try {
       const response = await axios.post('http://localhost:8000/api/register/', {
         username,
         email,
         password,
-        
+        first_name: firstName,
+        last_name: lastName
       });
       console.log('User registered:', response.data);
       setUser(response.data.user); // Save user info after registration
@@ -32,16 +33,21 @@ export const AuthProvider = ({ children }) => {
         password,
       });
       console.log('Login successful:', response.data);
-      // Assume response contains a token and possibly user information
+      
+      // Store token in localStorage or sessionStorage
+      localStorage.setItem('authTokens', JSON.stringify(response.data));
+
+      // Set user data from the response (ensure correct structure based on your API response)
       setUser({
-        username: response.data.username, // Ensure this matches the actual API response
-        // Add other user properties if available
+        username: response.data.username, // Assuming the response contains the username
+        email: response.data.email, // You can add more fields as needed
       });
+
       setError(null); // Clear error
-      return Promise.resolve(); // Return success to resolve the login process
+      return Promise.resolve();
     } catch (err) {
       setError(err.response?.data?.detail || 'Login failed');
-      return Promise.reject(err); // Reject in case of error
+      return Promise.reject(err);
     }
   };
 
