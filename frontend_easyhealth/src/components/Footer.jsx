@@ -54,7 +54,7 @@ function Footer() {
         {/* Copyright */}
         <div className="text-center p-3" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)', margin: 0 }}>
           <p style={{ fontSize: '1rem' }}>
-            © {new Date().getFullYear()} | All rights reserved | Designed by <a className="text-white" href="https://yourwebsite.com">YourCompanyName</a>
+            © {new Date().getFullYear()} | All rights reserved | Designed by <a className="text-white" href="https://yourwebsite.com">EasyHealth</a>
           </p>
         </div>
         {/* Copyright */}
