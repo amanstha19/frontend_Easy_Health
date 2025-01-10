@@ -21,13 +21,20 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:8000/api/register/', userData);
+      const response = await axios.post('http://localhost:8000/api/register/', {
+        email: userData.email,
+        password: userData.password,
+        username: userData.username,
+        first_name: userData.firstName, // Ensure this matches backend expectation
+        last_name: userData.lastName,
+      });
       setUser(response.data.user);
-      sessionStorage.setItem('authTokens', JSON.stringify(response.data.tokens)); // Store tokens in sessionStorage
+      sessionStorage.setItem('authTokens', JSON.stringify(response.data.tokens));
     } catch (err) {
       setError(err.response?.data?.detail || 'Signup failed');
     }
   };
+  
 
   const login = async (credentials) => {
     try {
