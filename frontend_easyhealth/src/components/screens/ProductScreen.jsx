@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Image, Button, Spinner } from 'react-bootstrap';
 import axios from 'axios';
+import { useCart } from '../../context/CartContext'; // Assuming you have CartContext set up
 
 function ProductScreen() {
   const { id } = useParams();  // Extract the product ID from the route
   const navigate = useNavigate();  // For navigation (e.g., back button)
+  const { addToCart } = useCart(); // Use the addToCart function from CartContext
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,6 +29,11 @@ function ProductScreen() {
 
     fetchProductDetails();
   }, [id]);
+
+  const handleAddToCart = () => {
+    addToCart(product);  // Add the product to the cart
+    navigate('/cart');    // Navigate to the cart page
+  };
 
   if (loading) {
     return (
@@ -79,6 +86,7 @@ function ProductScreen() {
               borderColor: '#3a5a40',
               marginTop: '20px',
             }}
+            onClick={handleAddToCart} // Add to cart logic here
           >
             Add to Cart
           </Button>
