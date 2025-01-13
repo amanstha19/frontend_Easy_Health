@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
-import LandingContainer from './home /CardContainer';
+import LandingContainer from './CardContainer';
 
 function HomeScreen() {
   const [products, setProducts] = useState([]);
