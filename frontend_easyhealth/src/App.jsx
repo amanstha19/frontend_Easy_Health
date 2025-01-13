@@ -16,6 +16,7 @@ import { AuthProvider } from './context/AuthProvider'; // Auth context
 import Profile from './components/screens/Profile';
 import CartScreen from './components/screens/CartScreen';
 import { CartProvider } from './context/CartContext'; // Cart context
+import AdminPanel from './components/screens/AdminPanel'; // Import AdminPanel
 
 function App() {
   useEffect(() => {
@@ -24,9 +25,10 @@ function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <CartProvider> {/* Wrap the whole app or just CartScreen with CartProvider */}
-        <Router>
+    <Router>
+      {/* Wrap the whole app with Router */}
+      <AuthProvider>
+        <CartProvider> {/* Wrap the whole app or just CartScreen with CartProvider */}
           <Navbar />
           <Container>
             <Routes>
@@ -38,12 +40,13 @@ function App() {
               <Route path="/ambulance" element={<Ambulance />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/cart" element={<CartScreen />} />
+              <Route path="/admin" element={<AdminPanel />} /> {/* Admin panel route */}
             </Routes>
           </Container>
           <Footer />
-        </Router>
-      </CartProvider> {/* Close CartProvider */}
-    </AuthProvider>
+        </CartProvider> {/* Close CartProvider */}
+      </AuthProvider>
+    </Router>
   );
 }
 
