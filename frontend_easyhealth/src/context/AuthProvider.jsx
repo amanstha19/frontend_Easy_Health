@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const authTokens = sessionStorage.getItem('authTokens'); // Use sessionStorage instead
+    const authTokens = sessionStorage.getItem('authTokens');
     if (authTokens) {
       const parsedTokens = JSON.parse(authTokens);
       setUser({
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
         email: userData.email,
         password: userData.password,
         username: userData.username,
-        first_name: userData.firstName, // Ensure this matches backend expectation
+        first_name: userData.firstName,
         last_name: userData.lastName,
       });
       setUser(response.data.user);
@@ -34,12 +34,11 @@ export const AuthProvider = ({ children }) => {
       setError(err.response?.data?.detail || 'Signup failed');
     }
   };
-  
 
   const login = async (credentials) => {
     try {
       const response = await axios.post('http://localhost:8000/api/token/', credentials);
-      sessionStorage.setItem('authTokens', JSON.stringify(response.data)); // Store tokens in sessionStorage
+      sessionStorage.setItem('authTokens', JSON.stringify(response.data)); 
       setUser({
         username: response.data.username,
         email: response.data.email,
@@ -52,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    sessionStorage.removeItem('authTokens'); // Clear sessionStorage on logout
+    sessionStorage.removeItem('authTokens');
   };
 
   return (

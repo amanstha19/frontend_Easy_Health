@@ -31,7 +31,10 @@ function ProductScreen() {
   }, [id]);
 
   const handleAddToCart = () => {
-    addToCart(product);  // Add the product to the cart
+    addToCart({
+      ...product,
+      prescriptionRequired: product.prescription_required,  // Ensure prescriptionRequired is passed
+    });
     navigate('/cart');    // Navigate to the cart page
   };
 

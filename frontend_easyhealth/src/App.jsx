@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -12,11 +12,13 @@ import SignupScreen from './components/screens/SignupScreen';
 import HomeScreen from './components/screens/HomeScreen';
 import ProductScreen from './components/screens/ProductScreen';
 import Ambulance from './components/screens/Ambulance';
-import { AuthProvider } from './context/AuthProvider'; // Auth context
+import { AuthProvider } from './context/AuthProvider';
 import Profile from './components/screens/Profile';
 import CartScreen from './components/screens/CartScreen';
-import { CartProvider } from './context/CartContext'; // Cart context
-import AdminPanel from './components/screens/AdminPanel'; // Import AdminPanel
+import { CartProvider } from './context/CartContext';
+import AdminPanel from './components/screens/AdminPanel';
+import CheckoutScreen from './components/screens/CheckoutScreen';
+
 
 function App() {
   useEffect(() => {
@@ -24,11 +26,12 @@ function App() {
     testAPI();
   }, []);
 
+  const isAuthenticated = true; // Example: replace with actual authentication check
+
   return (
-    <Router>
-      {/* Wrap the whole app with Router */}
-      <AuthProvider>
-        <CartProvider> {/* Wrap the whole app or just CartScreen with CartProvider */}
+    <AuthProvider>
+      <CartProvider>
+        <Router>
           <Navbar />
           <Container>
             <Routes>
@@ -38,15 +41,21 @@ function App() {
               <Route path="/signup" element={<SignupScreen />} />
               <Route path="/signin" element={<Login />} />
               <Route path="/ambulance" element={<Ambulance />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route
+                path="/profile"
+                element={isAuthenticated ? <Profile /> : <Navigate to="/login" />}
+              />
               <Route path="/cart" element={<CartScreen />} />
-              <Route path="/admin" element={<AdminPanel />} /> {/* Admin panel route */}
+              <Route path="/admin" element={<AdminPanel />} />
+              <Route path="/checkout" element={<CheckoutScreen />} />
+
+
             </Routes>
           </Container>
           <Footer />
-        </CartProvider> {/* Close CartProvider */}
-      </AuthProvider>
-    </Router>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
