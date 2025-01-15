@@ -16,6 +16,9 @@ export const AuthProvider = ({ children }) => {
         username: parsedTokens.username,
         email: parsedTokens.email,
       });
+      
+      // Set token to axios default header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${parsedTokens.access}`;
     }
   }, []);
 
@@ -30,6 +33,9 @@ export const AuthProvider = ({ children }) => {
       });
       setUser(response.data.user);
       sessionStorage.setItem('authTokens', JSON.stringify(response.data.tokens));
+      
+      // Set token to axios default header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.tokens.access}`;
     } catch (err) {
       setError(err.response?.data?.detail || 'Signup failed');
     }
@@ -38,10 +44,14 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await axios.post('http://localhost:8000/api/token/', credentials);
-      sessionStorage.setItem('authTokens', JSON.stringify(response.data)); 
+      sessionStorage.setItem('authTokens', JSON.stringify(response.data));
+      
+      // Set token to axios default header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
+
       setUser({
-        username: response.data.username,
-        email: response.data.email,
+        username: response.data.username,  // Assuming username is returned
+        email: response.data.email,        // Assuming email is returned
       });
       setError(null);
     } catch (err) {
@@ -52,6 +62,9 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem('authTokens');
+    
+    // Remove the Authorization header from axios
+    delete axios.defaults.headers.common['Authorization'];
   };
 
   return (

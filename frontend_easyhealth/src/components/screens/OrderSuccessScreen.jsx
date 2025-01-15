@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Button, ListGroup } from 'react-bootstrap';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const OrderSuccessScreen = () => {
-  const { orderId } = useParams();  // Get the order ID from the URL
+  const { orderId } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
+      const authTokens = sessionStorage.getItem('authTokens');
+      if (!authTokens) {
+        setError('No token found, please log in.');
+        return;
+      }
+
       try {
         const response = await axios.get(`http://localhost:8000/api/order/${orderId}/`);
         setOrderDetails(response.data);
       } catch (error) {
+        setError('There was an error fetching your order details.');
         console.error('Error fetching order details:', error);
-        alert('There was an error fetching your order details.');
       } finally {
         setLoading(false);
       }
@@ -25,32 +30,26 @@ const OrderSuccessScreen = () => {
     fetchOrderDetails();
   }, [orderId]);
 
+  if (loading) {
+    return <p>Loading order details...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
   return (
-    <div className="order-success-screen">
-      {loading ? (
-        <div>Loading...</div>
-      ) : orderDetails ? (
-        <Card>
-          <Card.Body>
-            <h2>Order Placed Successfully</h2>
-            <p>Order ID: {orderDetails.id}</p>
-            <p>Delivery Address: {orderDetails.address}</p>
-            <p>Total Price: NPR {orderDetails.total_price}</p>
-
-            <h4>Order Items:</h4>
-            <ListGroup>
-              {orderDetails.items.map((item) => (
-                <ListGroup.Item key={item.id}>
-                  {item.name} - {item.quantity} x NPR {item.price}
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-
-            <Button onClick={() => navigate('/')}>Go to Home</Button>
-          </Card.Body>
-        </Card>
+    <div>
+      <h1>Order Success</h1>
+      {orderDetails ? (
+        <div>
+          <p>Order ID: {orderDetails.id}</p>
+          <p>Order Total: NPr{orderDetails.total_price}</p>
+          <p>Order Status: {orderDetails.status}</p>
+          {/* Add more details as needed */}
+        </div>
       ) : (
-        <div>Order details not found.</div>
+        <p>No order details found.</p>
       )}
     </div>
   );

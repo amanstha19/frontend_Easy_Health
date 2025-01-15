@@ -4,10 +4,8 @@ import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-// Import Bootstrap CSS directly here if not already imported globally
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Inline CSS for light green background and other custom styles
 const styles = {
   background: {
     backgroundColor: '#d3f8d3', // Light green background color
@@ -59,7 +57,7 @@ const styles = {
 };
 
 const CheckoutScreen = () => {
-  const { cartItems } = useCart(); // Get cart items from context
+  const { cartItems } = useCart();
   const navigate = useNavigate();
   const [prescription, setPrescription] = useState(null);
   const [address, setAddress] = useState('');
@@ -71,11 +69,8 @@ const CheckoutScreen = () => {
     const requiresPrescription = cartItems.some(item => item.prescriptionRequired);
     setPrescriptionRequired(requiresPrescription);
 
-    // Calculate total price of cart
     const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
     setTotalPrice(total);
-
-    console.log('Cart items in useEffect:', cartItems);
   }, [cartItems]);
 
   const handlePrescriptionUpload = (e) => {
@@ -85,30 +80,22 @@ const CheckoutScreen = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if cartItems is empty
     if (cartItems.length === 0) {
       alert('Your cart is empty. Please add items to the cart before proceeding to checkout.');
-      console.log('Cart is empty, preventing checkout');
       return;
     }
 
     if (prescriptionRequired && !prescription) {
       alert('Please upload your prescription.');
-      console.log('No prescription uploaded but required');
       return;
     }
 
-    // Prepare the form data
     const formData = new FormData();
     formData.append('address', address);
-
     if (prescriptionRequired) {
       formData.append('prescription', prescription);
     }
-
-    // Add cart items directly to the form data
     formData.append('cart_items', JSON.stringify(cartItems));
-    console.log('Cart items before sending request:', cartItems);
 
     setLoading(true);
 
@@ -121,7 +108,7 @@ const CheckoutScreen = () => {
       }
 
       const parsedToken = JSON.parse(userToken);
-      const token = parsedToken?.access; // Assuming your token is stored as "access"
+      const token = parsedToken?.access;
 
       if (!token) {
         alert('Invalid token. Please login again.');
@@ -129,7 +116,6 @@ const CheckoutScreen = () => {
         return;
       }
 
-      // API call to create an order and insert into the database
       const response = await axios.post('http://localhost:8000/api/order/place/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -137,14 +123,10 @@ const CheckoutScreen = () => {
         },
       });
 
-      console.log('Order placed:', response.data);
-      
-      // Redirect to order success screen after successful checkout
       navigate(`/order-success/${response.data.order_id}`);
     } catch (error) {
       console.error('Error during checkout:', error);
-      console.error('Error response data:', error.response?.data); // Log the detailed error response
-      alert("There was an error processing your checkout. Please try again.");
+      alert('There was an error processing your checkout. Please try again.');
     } finally {
       setLoading(false);
     }

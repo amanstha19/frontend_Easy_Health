@@ -18,15 +18,14 @@ import CartScreen from './components/screens/CartScreen';
 import { CartProvider } from './context/CartContext';
 import AdminPanel from './components/screens/AdminPanel';
 import CheckoutScreen from './components/screens/CheckoutScreen';
-
+import OrderSuccessScreen from './components/screens/OrderSuccessScreen';
 
 function App() {
   useEffect(() => {
-    // Call the API when the component mounts
     testAPI();
   }, []);
 
-  const isAuthenticated = true; // Example: replace with actual authentication check
+  const isAuthenticated = true; // Replace with actual authentication check
 
   return (
     <AuthProvider>
@@ -41,15 +40,14 @@ function App() {
               <Route path="/signup" element={<SignupScreen />} />
               <Route path="/signin" element={<Login />} />
               <Route path="/ambulance" element={<Ambulance />} />
-              <Route
-                path="/profile"
-                element={isAuthenticated ? <Profile /> : <Navigate to="/login" />}
+              <Route 
+                path="/profile" 
+                element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} 
               />
               <Route path="/cart" element={<CartScreen />} />
               <Route path="/admin" element={<AdminPanel />} />
               <Route path="/checkout" element={<CheckoutScreen />} />
-
-
+              <Route path="/order-success/:orderId" element={<OrderSuccessScreen />} />
             </Routes>
           </Container>
           <Footer />
