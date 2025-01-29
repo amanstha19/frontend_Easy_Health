@@ -13,12 +13,22 @@ import HomeScreen from './components/screens/HomeScreen';
 import ProductScreen from './components/screens/ProductScreen';
 import Ambulance from './components/screens/Ambulance';
 import { AuthProvider } from './context/AuthProvider';
-import Profile from './components/screens/Profile';
+import Profile from './components/screens/profile';
 import CartScreen from './components/screens/CartScreen';
 import { CartProvider } from './context/CartContext';
 import AdminPanel from './components/screens/AdminPanel';
 import CheckoutScreen from './components/screens/CheckoutScreen';
 import OrderSuccessScreen from './components/screens/OrderSuccessScreen';
+import LabTestBookingPage from './components/screens/LabTestBookingPage';
+import HealthPackagesPage from './components/screens/HealthPackagesPage';
+import MedicinesPage from './components/screens/MedicinesPage';
+import LabTestsPage from './components/screens/LabTestsPage';
+
+
+
+
+
+
 
 function App() {
   useEffect(() => {
@@ -48,6 +58,17 @@ function App() {
               <Route path="/admin" element={<AdminPanel />} />
               <Route path="/checkout" element={<CheckoutScreen />} />
               <Route path="/order-success/:orderId" element={<OrderSuccessScreen />} />
+              <Route path="/book-test/:testId" element={<LabTestBookingPage />} />
+              <Route path="/category/health-packages" element={<HealthPackagesPage />} />
+              <Route path="/category/medicines" element={<MedicinesPage />} />
+              <Route path="/category/lab-tests" element={<LabTestsPage />} />
+            
+             
+     
+
+             
+             
+              
             </Routes>
           </Container>
           <Footer />

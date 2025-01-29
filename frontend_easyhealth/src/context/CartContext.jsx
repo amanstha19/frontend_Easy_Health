@@ -6,13 +6,12 @@ const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-  // Initialize cartItems from localStorage or default to an empty array
   const [cartItems, setCartItems] = useState(() => {
+    const authTokens = sessionStorage.getItem('authTokens');
     const savedCart = localStorage.getItem('cartItems');
-    return savedCart ? JSON.parse(savedCart) : [];
+    return (authTokens && savedCart) ? JSON.parse(savedCart) : [];
   });
 
-  // Whenever cartItems change, save them to localStorage
   useEffect(() => {
     if (cartItems.length > 0) {
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
@@ -21,7 +20,20 @@ export const CartProvider = ({ children }) => {
     }
   }, [cartItems]);
 
-  // Function to add items to the cart
+  // Add listener for logout events
+  useEffect(() => {
+    const handleLogout = () => {
+      setCartItems([]);
+      localStorage.removeItem('cartItems');
+    };
+
+    window.addEventListener('logout', handleLogout);
+
+    return () => {
+      window.removeEventListener('logout', handleLogout);
+    };
+  }, []);
+
   const addToCart = (item) => {
     setCartItems((prevItems) => {
       const itemExists = prevItems.some((cartItem) => cartItem.id === item.id);
@@ -36,12 +48,10 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // Function to remove items from the cart
   const removeFromCart = (id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
-  // Function to update quantity (increase or decrease)
   const updateQuantity = (id, action) => {
     setCartItems((prevItems) =>
       prevItems.map((item) => {
@@ -57,11 +67,17 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+    localStorage.removeItem('cartItems');
+  };
+
   const value = {
     cartItems,
     addToCart,
     removeFromCart,
-    updateQuantity,  // Add the updateQuantity function to context
+    updateQuantity,
+    clearCart
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

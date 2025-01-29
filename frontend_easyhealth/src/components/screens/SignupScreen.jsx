@@ -26,8 +26,13 @@ const Signup = () => {
         return false;
       }
     } catch (err) {
-      console.error('Error checking email uniqueness:', err);
-      setEmailError('Error checking email uniqueness. Please try again.');
+      if (err.response) {
+        console.error('Error response:', err.response.data);
+        setEmailError(err.response.data.error || 'Error checking email uniqueness. Please try again.');
+      } else {
+        console.error('Error:', err.message);
+        setEmailError('Error checking email uniqueness. Please try again.');
+      }
       return false;
     }
   };

@@ -50,8 +50,8 @@ export const AuthProvider = ({ children }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
 
       setUser({
-        username: response.data.username,  // Assuming username is returned
-        email: response.data.email,        // Assuming email is returned
+        username: response.data.username,
+        email: response.data.email,
       });
       setError(null);
     } catch (err) {
@@ -62,9 +62,10 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem('authTokens');
-    
     // Remove the Authorization header from axios
     delete axios.defaults.headers.common['Authorization'];
+    // Dispatch logout event to trigger cart clearing
+    window.dispatchEvent(new Event('logout'));
   };
 
   return (

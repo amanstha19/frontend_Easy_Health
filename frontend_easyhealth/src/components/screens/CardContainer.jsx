@@ -23,18 +23,8 @@ function LandingContainer() {
             <p className="landing-subtitle">
               Your one-stop platform for managing medications, lab tests, and health records.
             </p>
-            <Form onSubmit={handleSearch} className="search-form">
-              <Form.Control
-                type="text"
-                placeholder="Search for products, medicines..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
-              />
-              <Button variant="success" type="submit" className="search-button">
-                Search
-              </Button>
-            </Form>
+        
+          
           </Col>
         </Row>
       </Container>

@@ -62,72 +62,41 @@ function HomeScreen() {
         </Row>
       </div>
 
-      {/* Popular Products Section */}
-      <h1 id="products" style={{ textAlign: 'center', color: '#3a5a40', fontSize: '2.5rem', marginTop: '50px' }}>Popular Products</h1>
-      <Row>
-        {Array.isArray(products) && products.length > 0 ? (
-          products.map((product) => {
-            return (
-              <Col key={product.id} sm={12} md={6} lg={4} xl={3} style={{ display: 'flex', justifyContent: 'center' }}>
+      {/* Featured Products Section */}
+      <div className="featured-products-section" style={{ marginTop: '50px' }}>
+        <h2 style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: '30px', color: '#3a5a40' }}>Featured Products</h2>
+        <Row>
+          {products.length > 0 ? (
+            products.slice(0, 4).map((product) => (
+              <Col sm={12} md={6} lg={3} key={product.id} style={{ display: 'flex', justifyContent: 'center' }}>
                 <div
                   style={{
+                    padding: '20px',
+                    backgroundColor: '#f8f8f8',
+                    borderRadius: '10px',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    textAlign: 'center',
                     width: '100%',
                     maxWidth: '250px',
-                    textAlign: 'center',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    backgroundColor: '#f8f8f8',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    border: '1px solid #e4f7e4',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
                   }}
                 >
                   <Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <div
-                      style={{
-                        width: '100%',
-                        aspectRatio: '1 / 1',
-                        overflow: 'hidden',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#e4f7e4',
-                      }}
-                    >
-                      {product.image ? (
-                        <img
-                          src={`http://127.0.0.1:8000${product.image}`}
-                          alt={product.generic_name}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                          }}
-                        />
-                      ) : (
-                        <p>No image available</p>
-                      )}
-                    </div>
-                    <h3 style={{ fontSize: '1.1rem', margin: '10px 0', color: '#333' }}>{product.generic_name}</h3>
+                    <img
+                      src={`http://127.0.0.1:8000${product.image}`}
+                      alt={product.name}
+                      style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
+                    />
+                    <h3 style={{ fontSize: '1.1rem', margin: '10px 0', color: '#333' }}>{product.name}</h3>
                   </Link>
-                  <p style={{ margin: '5px 0', color: '#555' }}>Category: {product.category}</p>
-                  <p style={{ margin: '5px 0', fontWeight: 'bold', color: '#2d2d2d' }}>Price: NPR{product.price || 'N/A'}</p>
+                  <p style={{ margin: '5px 0', color: '#555' }}>Price: NPR {product.price}</p>
                 </div>
               </Col>
-            );
-          })
-        ) : (
-          <p>No products found.</p>
-        )}
-      </Row>
+            ))
+          ) : (
+            <p>No products available.</p>
+          )}
+        </Row>
+      </div>
 
       {/* Health Tips & Insights Section */}
       <div className="health-tips-section" style={{ padding: '50px 0', backgroundColor: '#e4f7e4' }}>
