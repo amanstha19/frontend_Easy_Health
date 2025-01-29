@@ -8,8 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const styles = {
   background: {
-    backgroundColor: '#d3f8d3', // Light green background color
-    minHeight: '100vh', // Ensures the background covers the full height
+    backgroundColor: '#d3f8d3',
+    minHeight: '100vh',
     padding: '20px 0',
   },
   container: {
@@ -61,6 +61,7 @@ const CheckoutScreen = () => {
   const navigate = useNavigate();
   const [prescription, setPrescription] = useState(null);
   const [address, setAddress] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('cod'); // Default to COD
   const [prescriptionRequired, setPrescriptionRequired] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -92,6 +93,7 @@ const CheckoutScreen = () => {
 
     const formData = new FormData();
     formData.append('address', address);
+    formData.append('payment_method', paymentMethod);
     if (prescriptionRequired) {
       formData.append('prescription', prescription);
     }
@@ -123,7 +125,13 @@ const CheckoutScreen = () => {
         },
       });
 
-      navigate(`/order-success/${response.data.order_id}`);
+      if (paymentMethod === 'cod') {
+        // Redirect to success page immediately if COD
+        navigate(`/order-success/${response.data.order_id}`);
+      } else {
+        // Redirect to Stripe payment if online payment
+        navigate(`/payment/${response.data.order_id}/${totalPrice}`);
+      }
     } catch (error) {
       console.error('Error during checkout:', error);
       alert('There was an error processing your checkout. Please try again.');
@@ -197,6 +205,19 @@ const CheckoutScreen = () => {
                       />
                     </Form.Group>
                   )}
+
+                  <Form.Group controlId="paymentMethod">
+                    <Form.Label>Select Payment Method</Form.Label>
+                    <Form.Select
+                      value={paymentMethod}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      required
+                      style={styles.formControl}
+                    >
+                      <option value="cod">Cash on Delivery</option>
+                      <option value="online">Online Payment</option>
+                    </Form.Select>
+                  </Form.Group>
 
                   <Button 
                     type="submit" 

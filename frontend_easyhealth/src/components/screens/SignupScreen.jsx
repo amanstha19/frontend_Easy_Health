@@ -9,15 +9,17 @@ const Signup = () => {
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [city, setCity] = useState('');
+  const [phone, setPhone] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const { signup, error } = useContext(AuthContext);
+  const { signup, error, setError } = useContext(AuthContext); // Ensure 'setError' is available if needed
   const navigate = useNavigate();
 
   // Check email uniqueness via backend API
   const checkEmailUniqueness = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/api/check-email/', { email }); // Ensure this is the correct API endpoint
+      const response = await axios.post('http://localhost:8000/api/check-email/', { email });
       if (response.data.message === 'Email is available.') {
         setEmailError('');
         return true;
@@ -53,12 +55,13 @@ const Signup = () => {
     setPasswordError('');
 
     // Proceed with signup if all checks are successful
-    signup({ email, password, username, firstName, lastName })
+    signup({ email, password, username, firstName, lastName, city, phone })
       .then(() => {
         navigate('/signin');
       })
       .catch((err) => {
         console.error('Signup error:', err);
+        setError('Signup failed. Please try again.'); // Display a general error message
       });
   };
 
@@ -130,6 +133,30 @@ const Signup = () => {
                   required
                 />
                 {passwordError && <div className="text-danger mt-2">{passwordError}</div>}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="city" className="form-label">City</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="Enter your city"
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="phone" className="form-label">Phone Number</label>
+                <input
+                  type="tel"
+                  className="form-control"
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Enter your phone number"
+                  required
+                />
               </div>
               <button type="submit" className="btn btn-primary w-100">Sign Up</button>
             </form>

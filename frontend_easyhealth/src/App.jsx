@@ -23,10 +23,12 @@ import LabTestBookingPage from './components/screens/LabTestBookingPage';
 import HealthPackagesPage from './components/screens/HealthPackagesPage';
 import MedicinesPage from './components/screens/MedicinesPage';
 import LabTestsPage from './components/screens/LabTestsPage';
+import Payment from './components/screens/Payment';
 
 
-
-
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51QmXqQJ3ahnxPJePz2KQcafJQ2h17ZujjzfyRNi84HzD4KuhPn2v2JZCkiQWzsfgSRcs6bHYvsWQWYtouMB4afl700hREzYDyU'); // Replace with actual Stripe public key
 
 
 
@@ -62,6 +64,15 @@ function App() {
               <Route path="/category/health-packages" element={<HealthPackagesPage />} />
               <Route path="/category/medicines" element={<MedicinesPage />} />
               <Route path="/category/lab-tests" element={<LabTestsPage />} />
+              <Route 
+                path="/payment/:orderId/:totalPrice" 
+                element={
+                  <Elements stripe={stripePromise}>
+                    <Payment />
+                  </Elements>
+                } 
+              />
+            
             
              
      
