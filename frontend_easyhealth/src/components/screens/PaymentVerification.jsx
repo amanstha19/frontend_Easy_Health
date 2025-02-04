@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const PaymentVerification = () => {
     const [verificationStatus, setVerificationStatus] = useState('Verifying...');
     const [paymentDetails, setPaymentDetails] = useState(null);
     const [error, setError] = useState(null);
     const location = useLocation();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const verifyPayment = async () => {
@@ -18,13 +17,20 @@ const PaymentVerification = () => {
                 const status = searchParams.get('status');
                 const transactionUuid = searchParams.get('transaction_uuid');
 
+                // Call backend to verify payment
                 const response = await axios.post('/api/verify-payment/', {
                     transaction_code: transactionCode,
                     status: status,
                     transaction_uuid: transactionUuid
                 });
 
-                setVerificationStatus(status === 'COMPLETED' ? 'Payment Successful' : 'Payment Failed');
+                // Check the payment status and update the UI
+                if (status === 'COMPLETED') {
+                    setVerificationStatus('Payment Successful');
+                } else {
+                    setVerificationStatus('Payment Failed');
+                }
+
                 setPaymentDetails({
                     transactionCode,
                     status,
@@ -32,6 +38,7 @@ const PaymentVerification = () => {
                 });
 
             } catch (error) {
+                // Handle errors gracefully
                 setVerificationStatus('Verification Failed');
                 setError(error.response?.data?.error || 'An error occurred');
             }
@@ -39,10 +46,6 @@ const PaymentVerification = () => {
 
         verifyPayment();
     }, [location]);
-
-    const handleReturn = () => {
-        navigate('/orders'); // Redirect to orders or home page
-    };
 
     return (
         <div style={{
@@ -75,21 +78,6 @@ const PaymentVerification = () => {
                         <p>Transaction UUID: {paymentDetails.transactionUuid}</p>
                     </div>
                 )}
-
-                <button
-                    onClick={handleReturn}
-                    style={{
-                        marginTop: '20px',
-                        padding: '10px 20px',
-                        backgroundColor: '#007bff',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Return to Orders
-                </button>
             </div>
         </div>
     );
