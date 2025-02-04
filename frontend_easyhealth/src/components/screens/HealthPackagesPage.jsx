@@ -93,9 +93,7 @@ const HealthPackagesPage = () => {
 
                 <p><strong>Price:</strong> NPR {pkg.price}</p>
 
-                <Button variant="success" className="w-100">
-                  Book Package
-                </Button>
+               
               </Card.Body>
             </Card>
           </Col>

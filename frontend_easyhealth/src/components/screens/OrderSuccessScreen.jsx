@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { Spinner, Alert, Card, Button } from 'react-bootstrap';
 
 const OrderSuccessScreen = () => {
   const { orderId } = useParams();
@@ -13,6 +14,7 @@ const OrderSuccessScreen = () => {
       const authTokens = sessionStorage.getItem('authTokens');
       if (!authTokens) {
         setError('No token found, please log in.');
+        setLoading(false);
         return;
       }
 
@@ -31,25 +33,44 @@ const OrderSuccessScreen = () => {
   }, [orderId]);
 
   if (loading) {
-    return <p>Loading order details...</p>;
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <Spinner animation="border" variant="primary" />
+      </div>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <Alert variant="danger" className="m-4">
+        {error}
+      </Alert>
+    );
   }
 
   return (
-    <div>
-      <h1>Order Success</h1>
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Order Success</h1>
       {orderDetails ? (
-        <div>
-          <p>Order ID: {orderDetails.id}</p>
-          <p>Order Total: NPr{orderDetails.total_price}</p>
-          <p>Order Status: {orderDetails.status}</p>
-          {/* Add more details as needed */}
-        </div>
+        <Card className="shadow-sm">
+          <Card.Body>
+            <Card.Title>Order ID: {orderDetails.id}</Card.Title>
+            <Card.Text>
+              <strong>Order Total: </strong>NPr {orderDetails.total_price}
+            </Card.Text>
+            <Card.Text>
+              <strong>Status: </strong>{orderDetails.status}
+            </Card.Text>
+            {/* Add more details as needed */}
+            <Button variant="primary" href="/orders" className="mt-3">
+              Back to Orders
+            </Button>
+          </Card.Body>
+        </Card>
       ) : (
-        <p>No order details found.</p>
+        <Alert variant="warning" className="mt-4">
+          No order details found.
+        </Alert>
       )}
     </div>
   );
