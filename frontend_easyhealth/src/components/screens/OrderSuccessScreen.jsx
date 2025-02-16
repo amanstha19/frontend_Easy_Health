@@ -19,7 +19,11 @@ const OrderSuccessScreen = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:8000/api/order/${orderId}/`);
+        const response = await axios.get(`http://localhost:8000/api/order/${orderId}/`, {
+          headers: {
+            Authorization: `Bearer ${authTokens}`,
+          },
+        });
         setOrderDetails(response.data);
       } catch (error) {
         setError('There was an error fetching your order details.');

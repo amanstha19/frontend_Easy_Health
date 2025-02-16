@@ -25,11 +25,8 @@ import MedicinesPage from './components/screens/MedicinesPage';
 import LabTestsPage from './components/screens/LabTestsPage';
 import Payment from './components/screens/Payment';
 import PaymentVerification from './components/screens/PaymentVerification';
+
 import PaymentSuccess from './components/screens/PaymentSuccess';
-
-
-
-
 
 function App() {
   useEffect(() => {
@@ -64,29 +61,14 @@ function App() {
               <Route path="/category/medicines" element={<MedicinesPage />} />
               <Route path="/category/lab-tests" element={<LabTestsPage />} />
 
+              {/* Payment Route with params */}
               <Route 
-                path="/payment/:orderId/:totalPrice"element={<Payment/>}
-
-
-        
-                
+                path="/payment/:orderId/:totalPrice" 
+                element={<Payment />} 
               />
 
-
               <Route path="/payment/verification" element={<PaymentVerification />} />
-              <Route path="/payment/success" element={<PaymentSuccess />} />
-     
-
-
-
-            
-            
-             
-     
-
-             
-             
-              
+              <Route path="/payment-success" component={PaymentSuccess} />
             </Routes>
           </Container>
           <Footer />

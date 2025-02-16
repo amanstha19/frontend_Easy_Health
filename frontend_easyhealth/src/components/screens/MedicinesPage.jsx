@@ -19,10 +19,15 @@ const MedicinesPage = () => {
     { value: 'FIRST', label: 'First Aid' },
   ];
 
+  // Fetch products with filters
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/products');
+        let url = 'http://127.0.0.1:8000/api/products/search/?';
+        if (searchQuery) url += `search=${searchQuery}&`;
+        if (selectedCategory) url += `category=${selectedCategory}&`;
+
+        const response = await fetch(url);
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -31,13 +36,7 @@ const MedicinesPage = () => {
     };
 
     fetchProducts();
-  }, []);
-
-  // Add debugging log to check selected category
-  useEffect(() => {
-    console.log('Selected Category:', selectedCategory);
-    console.log('Products:', products);
-  }, [selectedCategory, products]);
+  }, [searchQuery, selectedCategory]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -46,23 +45,6 @@ const MedicinesPage = () => {
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
   };
-
-  const filteredProducts = products.filter(product => {
-    // Add null checks and debugging
-    if (!product) return false;
-    
-    const nameMatch = product.name
-      ? product.name.toLowerCase().includes(searchQuery.toLowerCase())
-      : false;
-    
-    const categoryMatch = selectedCategory === '' || product.category === selectedCategory;
-
-    // Debug log for filtering
-    console.log('Product:', product.name, 'Category:', product.category, 
-                'Selected:', selectedCategory, 'Matches:', categoryMatch);
-
-    return nameMatch && categoryMatch;
-  });
 
   return (
     <Container fluid className="py-5">
@@ -98,13 +80,13 @@ const MedicinesPage = () => {
       <div className="mb-3 text-muted">
         <small>
           Selected Category: {selectedCategory || 'None'} | 
-          Filtered Products: {filteredProducts.length}
+          Filtered Products: {products.length}
         </small>
       </div>
 
       <Row className="g-4">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
+        {products.length > 0 ? (
+          products.map((product) => (
             <Col key={product.id} sm={6} md={4} lg={3}>
               <Card className="h-100 shadow-sm border-0 product-card">
                 <Link 

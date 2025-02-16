@@ -1,30 +1,19 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
 
-const PaymentSuccessPage = () => {
-  const [status, setStatus] = useState(null);
-  const location = useLocation();
-
+const PaymentSuccess = () => {
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const paymentStatus = queryParams.get('status');
-    const transactionUuid = queryParams.get('transaction_uuid');
-    
-    if (paymentStatus && transactionUuid) {
-      setStatus(paymentStatus);
-      // Handle the payment success/failure logic based on `status`
-    }
-  }, [location]);
+    // Redirect to home page after 3 seconds
+    setTimeout(() => {
+      window.location.href = "http://localhost:5173"; // Or any page you want to redirect to
+    }, 3000); // 3 seconds delay
+  }, []);
 
   return (
     <div>
-      {status === 'COMPLETE' ? (
-        <h1>Payment Successful!</h1>
-      ) : (
-        <h1>Payment Failed</h1>
-      )}
+      <h1>Payment Successful!</h1>
+      <p>Redirecting to the home page...</p>
     </div>
   );
 };
 
-export default PaymentSuccessPage;
+export default PaymentSuccess;
