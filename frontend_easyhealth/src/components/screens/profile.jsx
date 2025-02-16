@@ -34,17 +34,45 @@ const Profile = () => {
   }, []); // Empty array means this effect runs once when the component mounts
 
   if (error) {
-    return <div>{error}</div>;
+    return <div style={{ color: 'red', fontSize: '16px' }}>{error}</div>;
   }
 
   return (
-    <div>
+    <div style={{ width: '80%', maxWidth: '800px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       {user ? (
-        <div>
-          <h1>{user.username}'s Profile</h1>
-          <p>Email: {user.email}</p>
-          <p>First Name: {user.first_name ? user.first_name : 'N/A'}</p> {/* Default to 'N/A' if no first name */}
-          <p>Last Name: {user.last_name ? user.last_name : 'N/A'}</p> {/* Default to 'N/A' if no last name */}
+        <div style={{ backgroundColor: '#f4f4f9', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+          <div style={{ marginBottom: '20px' }}>
+            <h1 style={{ textAlign: 'center', color: '#333' }}>{user.username}'s Profile</h1>
+            <p style={{ fontSize: '16px', margin: '10px 0' }}><strong>Email:</strong> {user.email}</p>
+            <p style={{ fontSize: '16px', margin: '10px 0' }}><strong>First Name:</strong> {user.first_name || 'N/A'}</p>
+            <p style={{ fontSize: '16px', margin: '10px 0' }}><strong>Last Name:</strong> {user.last_name || 'N/A'}</p>
+          </div>
+
+          <div>
+            <h2 style={{ color: '#4CAF50', marginTop: '20px' }}>Orders:</h2>
+            {user.orders && user.orders.length > 0 ? (
+              user.orders.map((order) => (
+                <div key={order.order_id} style={{ backgroundColor: '#fff', marginTop: '20px', padding: '15px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                  <h3 style={{ color: '#333' }}>Order #{order.order_id}</h3>
+                  <p style={{ fontSize: '16px' }}><strong>Status:</strong> {order.status}</p>
+                  <p style={{ fontSize: '16px' }}><strong>Total Price:</strong> ₹{order.total_price}</p>
+                  <p style={{ fontSize: '16px' }}><strong>Shipping Address:</strong> {order.address}</p>
+
+                  <h4 style={{ color: '#333' }}>Products:</h4>
+                  {order.cart_items.map((item) => (
+                    <div key={item.product_id} style={{ backgroundColor: '#f9f9f9', padding: '10px', marginTop: '10px', borderRadius: '6px' }}>
+                      <p style={{ fontSize: '16px' }}><strong>{item.product_name}</strong></p>
+                      <p style={{ fontSize: '16px' }}>Quantity: {item.quantity}</p>
+                      <p style={{ fontSize: '16px' }}>Price: ₹{item.price}</p>
+                      <p style={{ fontSize: '16px' }}>Total Price: ₹{item.total_price}</p>
+                    </div>
+                  ))}
+                </div>
+              ))
+            ) : (
+              <p style={{ fontSize: '16px' }}>No orders found.</p>
+            )}
+          </div>
         </div>
       ) : (
         <p>Loading profile...</p>

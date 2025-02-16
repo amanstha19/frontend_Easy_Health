@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Alert, Card } from 'react-bootstrap';
 import axios from 'axios';
+import BookingPayment from './BookingPayment'; // Import your payment component
 
-// Utility to get the CSRF token
 const getCookie = (name) => {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
@@ -44,6 +43,8 @@ const LabTestBookingPage = () => {
   const [success, setSuccess] = useState(false);
   const [bookingStatus, setBookingStatus] = useState(null);
   const [reports, setReports] = useState([]);
+  const [showPayment, setShowPayment] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
 
   const api = axios.create({
     headers: {
@@ -71,14 +72,10 @@ const LabTestBookingPage = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-  };
 
-  const handleStatusCheckChange = (e) => {
-    const { name, value } = e.target;
-    setStatusCheck((prev) => ({
-      ...prev,
-      [name]: value
-    }));
+    if (name === 'email' || name === 'mobile_number') {
+      setStatusCheck({ ...statusCheck, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -93,19 +90,10 @@ const LabTestBookingPage = () => {
     delete submitData.agreedToTerms;
 
     try {
-      await api.post('/api/bookings/', submitData);
+      const response = await api.post('/api/bookings/', submitData);
       setSuccess(true);
-      setFormData({
-        name: '',
-        mobile_number: '',
-        email: '',
-        service: '',
-        booking_date: '',
-        appointment_time: '',
-        address: '',
-        notes: '',
-        agreedToTerms: false
-      });
+      setBookingId(response.data.id);
+      setShowPayment(true); // Show payment option after booking
     } catch (err) {
       if (err.response?.data?.error === 'This time slot is already booked') {
         setError('The selected time slot is already booked. Please choose another time.');
@@ -117,20 +105,21 @@ const LabTestBookingPage = () => {
     }
   };
 
-  const checkStatus = async (e) => {
+  const handleStatusCheck = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setBookingStatus(null);
-    setReports([]);
 
     try {
-      const response = await api.post('/api/bookings/status/', statusCheck);
-      const { booking, reports } = response.data;
-      setBookingStatus(booking);
-      setReports(reports);
+      const response = await api.get(`/api/bookings/status?email=${statusCheck.email}&mobile_number=${statusCheck.mobile_number}`);
+      if (response.data.status === 'no booking') {
+        setBookingStatus('No booking found with the provided information.');
+      } else {
+        setBookingStatus(response.data);
+        setReports(response.data.reports); // Assuming response includes reports
+      }
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to fetch booking status');
+      setError('Failed to check status');
     } finally {
       setLoading(false);
     }
@@ -206,7 +195,7 @@ const LabTestBookingPage = () => {
                 <option value="">Select a service</option>
                 {services.map((service) => (
                   <option key={service.id} value={service.id}>
-                    {service.name}
+                    {service.name} - ${service.price}
                   </option>
                 ))}
               </Form.Control>
@@ -246,17 +235,6 @@ const LabTestBookingPage = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Additional Notes</Form.Label>
-              <Form.Control
-                as="textarea"
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                rows={3}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
               <Form.Check
                 type="checkbox"
                 label="I agree to the terms and conditions"
@@ -275,19 +253,28 @@ const LabTestBookingPage = () => {
               {loading ? 'Submitting...' : 'Book Appointment'}
             </Button>
           </Form>
+
+          {/* Payment Component */}
+          {showPayment && bookingId && (
+            <BookingPayment 
+              bookingId={bookingId} 
+              amount={services.find(s => s.id === parseInt(formData.service))?.price || 0}
+            />
+          )}
         </>
       ) : (
         <>
           <h2 className="text-center mb-4">Check Appointment Status</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={checkStatus} className="mb-4">
+          {bookingStatus && <Alert variant="info">{bookingStatus}</Alert>}
+          <Form onSubmit={handleStatusCheck}>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
                 value={statusCheck.email}
-                onChange={handleStatusCheckChange}
+                onChange={handleChange}
                 required
               />
             </Form.Group>
@@ -298,32 +285,30 @@ const LabTestBookingPage = () => {
                 type="text"
                 name="mobile_number"
                 value={statusCheck.mobile_number}
-                onChange={handleStatusCheckChange}
+                onChange={handleChange}
                 required
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit" disabled={loading}>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={loading}
+            >
               {loading ? 'Checking...' : 'Check Status'}
             </Button>
           </Form>
 
-          {bookingStatus && <Card>
-            <Card.Body>
-              <h5>Status: {bookingStatus.status}</h5>
-              <p>Booked Date: {bookingStatus.booking_date}</p>
-            </Card.Body>
-          </Card>}
-
+          {/* Display reports */}
           {reports.length > 0 && (
-            <div>
-              <h3>Reports</h3>
-              <ul>
+            <Card className="mt-4">
+              <Card.Header>Reports</Card.Header>
+              <Card.Body>
                 {reports.map((report, index) => (
-                  <li key={index}>{report.name}</li>
+                  <p key={index}>{report}</p>
                 ))}
-              </ul>
-            </div>
+              </Card.Body>
+            </Card>
           )}
         </>
       )}

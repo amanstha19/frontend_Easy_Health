@@ -27,7 +27,7 @@ import Payment from './components/screens/Payment';
 import PaymentVerification from './components/screens/PaymentVerification';
 
 import PaymentSuccess from './components/screens/PaymentSuccess';
-
+import BookingPayment from './components/screens/BookingPayment';
 function App() {
   useEffect(() => {
     testAPI();
@@ -66,9 +66,11 @@ function App() {
                 path="/payment/:orderId/:totalPrice" 
                 element={<Payment />} 
               />
-
+             <Route path="/booking-payment/:bookingId/:amount" element={<BookingPayment />} />
               <Route path="/payment/verification" element={<PaymentVerification />} />
               <Route path="/payment-success" component={PaymentSuccess} />
+
+              
             </Routes>
           </Container>
           <Footer />
