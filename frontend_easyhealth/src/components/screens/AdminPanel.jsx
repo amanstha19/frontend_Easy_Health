@@ -1,13 +1,11 @@
-// src/components/screens/AdminPanel.jsx
-import React from 'react';
+import { useEffect } from "react";
 
-const AdminPanel = () => {
-  return (
-    <div>
-      <h1>Admin Panel</h1>
-      <p>Welcome, superuser!</p>
-    </div>
-  );
+const AdminRedirect = () => {
+  useEffect(() => {
+    window.location.href = "http://127.0.0.1:8000/admin/";
+  }, []);
+
+  return <p>Redirecting to Admin Panel...</p>;
 };
 
-export default AdminPanel;
+export default AdminRedirect;

@@ -28,6 +28,8 @@ import PaymentVerification from './components/screens/PaymentVerification';
 
 import PaymentSuccess from './components/screens/PaymentSuccess';
 import BookingPayment from './components/screens/BookingPayment';
+
+import AdminRedirect from './components/screens/AdminPanel';
 function App() {
   useEffect(() => {
     testAPI();
@@ -43,6 +45,8 @@ function App() {
           <Container>
             <Routes>
               <Route path="/" element={<HomeScreen />} />
+              <Route path="/admin" element={<AdminRedirect />} />
+
               <Route path="/product/:id" element={<ProductScreen />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignupScreen />} />

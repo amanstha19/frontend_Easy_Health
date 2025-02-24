@@ -3,74 +3,25 @@ import { Button, Form, Row, Col, ListGroup, Image, Card, Spinner } from 'react-b
 import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-const styles = {
-  background: {
-    backgroundColor: '#d3f8d3',
-    minHeight: '100vh',
-    padding: '20px 0',
-  },
-  container: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '20px',
-  },
-  card: {
-    borderRadius: '15px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    marginBottom: '20px',
-  },
-  cardBody: {
-    padding: '20px',
-  },
-  title: {
-    color: '#2c6b2f',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-  },
-  totalPrice: {
-    fontSize: '1.25rem',
-    fontWeight: 'bold',
-    marginTop: '10px',
-    color: '#2c6b2f',
-  },
-  button: {
-    width: '100%',
-    padding: '10px',
-    backgroundColor: '#4CAF50',
-    border: 'none',
-    color: 'white',
-    fontSize: '16px',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-  },
-  buttonDisabled: {
-    backgroundColor: '#cccccc',
-    cursor: 'not-allowed',
-  },
-  formControl: {
-    borderRadius: '8px',
-  },
-};
+import EsewaPayment from '../screens/Payment';  // Import the EsewaPayment component
 
 const CheckoutScreen = () => {
   const { cartItems } = useCart();
   const navigate = useNavigate();
   const [prescription, setPrescription] = useState(null);
   const [address, setAddress] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('cod'); // Default to COD
+  const [paymentMethod, setPaymentMethod] = useState('cod');
   const [prescriptionRequired, setPrescriptionRequired] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [showEsewaPayment, setShowEsewaPayment] = useState(false);
 
   useEffect(() => {
     const requiresPrescription = cartItems.some(item => item.prescriptionRequired);
     setPrescriptionRequired(requiresPrescription);
 
-    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    // Calculate total price from cart items
+    const total = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     setTotalPrice(total);
   }, [cartItems]);
 
@@ -91,14 +42,17 @@ const CheckoutScreen = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('address', address);
-    formData.append('payment_method', paymentMethod);
-    if (prescriptionRequired) {
-      formData.append('prescription', prescription);
+    if (!address.trim()) {
+      alert('Please enter a delivery address.');
+      return;
     }
-    formData.append('cart_items', JSON.stringify(cartItems));
 
+    if (paymentMethod === 'online') {
+      setShowEsewaPayment(true);
+      return;
+    }
+
+    // Rest of your existing COD handling code...
     setLoading(true);
 
     try {
@@ -118,6 +72,14 @@ const CheckoutScreen = () => {
         return;
       }
 
+      const formData = new FormData();
+      formData.append('address', address);
+      formData.append('payment_method', paymentMethod);
+      if (prescriptionRequired) {
+        formData.append('prescription', prescription);
+      }
+      formData.append('cart_items', JSON.stringify(cartItems));
+
       const response = await axios.post('http://localhost:8000/api/order/place/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -125,13 +87,7 @@ const CheckoutScreen = () => {
         },
       });
 
-      if (paymentMethod === 'cod') {
-        // Redirect to success page immediately if COD
-        navigate(`/order-success/${response.data.order_id}`);
-      } else {
-        // Redirect to Stripe payment if online payment
-        navigate(`/payment/${response.data.order_id}/${totalPrice}`);
-      }
+      navigate(`/order-success/${response.data.order_id}`);
     } catch (error) {
       console.error('Error during checkout:', error);
       alert('There was an error processing your checkout. Please try again.');
@@ -140,14 +96,18 @@ const CheckoutScreen = () => {
     }
   };
 
+  if (showEsewaPayment) {
+    return <EsewaPayment totalPrice={totalPrice} />;
+  }
+
   return (
-    <div style={styles.background}>
-      <div style={styles.container}>
-        <h1 className="text-center mb-4" style={styles.title}>Checkout</h1>
+    <div style={{ backgroundColor: '#d3f8d3', minHeight: '100vh', padding: '20px 0' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+        <h1 className="text-center mb-4" style={{ color: '#2c6b2f', fontWeight: 'bold' }}>Checkout</h1>
         <Row>
           <Col md={8}>
-            <Card style={styles.card}>
-              <Card.Body style={styles.cardBody}>
+            <Card className="mb-4">
+              <Card.Body>
                 <h2>Cart Items</h2>
                 {cartItems.length === 0 ? (
                   <div>Your cart is empty</div>
@@ -171,17 +131,17 @@ const CheckoutScreen = () => {
                     ))}
                   </ListGroup>
                 )}
-                <div style={styles.totalPrice}>
+                <div className="mt-3">
                   <strong>Total Price: NPR {totalPrice}</strong>
                 </div>
               </Card.Body>
             </Card>
           </Col>
           <Col md={4}>
-            <Card style={styles.card}>
-              <Card.Body style={styles.cardBody}>
+            <Card>
+              <Card.Body>
                 <Form onSubmit={handleSubmit}>
-                  <Form.Group controlId="address">
+                  <Form.Group className="mb-3">
                     <Form.Label>Delivery Address</Form.Label>
                     <Form.Control
                       type="text"
@@ -189,41 +149,38 @@ const CheckoutScreen = () => {
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       required
-                      style={styles.formControl}
                     />
                   </Form.Group>
 
                   {prescriptionRequired && (
-                    <Form.Group controlId="prescription">
+                    <Form.Group className="mb-3">
                       <Form.Label>Upload Prescription</Form.Label>
                       <Form.Control
                         type="file"
                         accept="image/*,application/pdf"
                         onChange={handlePrescriptionUpload}
                         required
-                        style={styles.formControl}
                       />
                     </Form.Group>
                   )}
 
-                  <Form.Group controlId="paymentMethod">
+                  <Form.Group className="mb-3">
                     <Form.Label>Select Payment Method</Form.Label>
                     <Form.Select
                       value={paymentMethod}
                       onChange={(e) => setPaymentMethod(e.target.value)}
                       required
-                      style={styles.formControl}
                     >
                       <option value="cod">Cash on Delivery</option>
-                      <option value="online">Online Payment</option>
+                      <option value="online">Online Payment (eSewa)</option>
                     </Form.Select>
                   </Form.Group>
 
                   <Button 
                     type="submit" 
-                    variant="primary" 
-                    style={loading ? { ...styles.button, ...styles.buttonDisabled } : styles.button} 
+                    className="w-100"
                     disabled={loading}
+                    variant="success"
                   >
                     {loading ? <Spinner animation="border" size="sm" /> : 'Place Order'}
                   </Button>
