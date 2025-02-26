@@ -33,7 +33,7 @@ const CheckoutScreen = () => {
     e.preventDefault();
 
     if (cartItems.length === 0) {
-      alert('Your cart is empty. Please add items to the cart before proceeding to checkout.');
+      alert('Your cart is empty. Please add items before proceeding to checkout.');
       return;
     }
 
@@ -47,12 +47,6 @@ const CheckoutScreen = () => {
       return;
     }
 
-    if (paymentMethod === 'online') {
-      setShowEsewaPayment(true);
-      return;
-    }
-
-    // Rest of your existing COD handling code...
     setLoading(true);
 
     try {
@@ -87,7 +81,14 @@ const CheckoutScreen = () => {
         },
       });
 
+      if (paymentMethod === 'online') {
+        // First, ensure stock is reduced by placing the order
+        setShowEsewaPayment(true);
+        return;
+      }
+
       navigate(`/order-success/${response.data.order_id}`);
+
     } catch (error) {
       console.error('Error during checkout:', error);
       alert('There was an error processing your checkout. Please try again.');

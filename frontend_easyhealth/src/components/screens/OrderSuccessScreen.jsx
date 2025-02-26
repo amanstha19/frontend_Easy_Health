@@ -11,6 +11,7 @@ const OrderSuccessScreen = () => {
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
+      // Retrieve auth token from sessionStorage
       const authTokens = sessionStorage.getItem('authTokens');
       if (!authTokens) {
         setError('No token found, please log in.');
@@ -18,10 +19,20 @@ const OrderSuccessScreen = () => {
         return;
       }
 
+      const parsedToken = JSON.parse(authTokens);  // Parsing the token to get the access key
+      const token = parsedToken?.access;
+
+      if (!token) {
+        setError('Invalid token, please log in again.');
+        setLoading(false);
+        return;
+      }
+
       try {
+        // Make API request to fetch order details
         const response = await axios.get(`http://localhost:8000/api/order/${orderId}/`, {
           headers: {
-            Authorization: `Bearer ${authTokens}`,
+            Authorization: `Bearer ${token}`,  // Passing the token in headers
           },
         });
         setOrderDetails(response.data);
@@ -60,7 +71,7 @@ const OrderSuccessScreen = () => {
           <Card.Body>
             <Card.Title>Order ID: {orderDetails.id}</Card.Title>
             <Card.Text>
-              <strong>Order Total: </strong>NPr {orderDetails.total_price}
+              <strong>Order Total: </strong>NPR {orderDetails.total_price}
             </Card.Text>
             <Card.Text>
               <strong>Status: </strong>{orderDetails.status}
